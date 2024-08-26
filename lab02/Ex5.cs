@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Dynamic;
 using System.Net;
 using System.Net.Http.Json;
@@ -46,49 +48,28 @@ internal record PokemonTipoDTO
 
 class Program
 {
-    private void EscreveNovoArquivo(PokemonDTO pokemon)
-    {
-        string fileName = "pokedex.txt";
-
-        using (StreamWriter stream = new(fileName))
-        {
-            stream.WriteLine(pokemon.ToString());
-        }
-    }
-
-    private void EscreveNovoArquivo(IList<PokemonDTO> pokemons)
-    {
-        string fileName = "pokedex.txt";
-
-        using (StreamWriter stream = new(fileName))
-        {
-            foreach (PokemonDTO pokemon in pokemons)
-            {
-                stream.WriteLine(pokemon.ToString());
-            }
-        }
-    }
+    private readonly object _lock = new();
 
     private void EscreveNoArquivo(PokemonDTO pokemon)
     {
         string fileName = "pokedex.txt";
 
-        using (StreamWriter stream = File.AppendText(fileName))
+        lock(_lock)
         {
-            stream.WriteLine(pokemon.ToString());
+            using (StreamWriter stream = File.AppendText(fileName))
+            {
+                stream.WriteLine(pokemon.ToString());
+            }
         }
     }
 
-    private void EscreveNoArquivo(IList<PokemonDTO> pokemons)
+    private void EscreveNoArquivo(string pokemons)
     {
         string fileName = "pokedex.txt";
 
         using (StreamWriter stream = File.AppendText(fileName))
         {
-            foreach (PokemonDTO pokemon in pokemons)
-            {
-                stream.WriteLine(pokemon.ToString());
-            }
+            stream.WriteLine(pokemons);
         }
     }
 
@@ -140,10 +121,51 @@ class Program
         // Continue a Implementação
         // ...
         Program p = new();
+        ConcurrentBag<PokemonDTO> pokemonBag = new();
+        List<Task> tasks = new();
+        Stopwatch timer = new();
 
-        //var c = p.GetPokemon(pokemonIds[0]);
-        var c = p.GetPokemonAsync(pokemonIds[0]).Result;
+        //Versão sem Paralelismo/Concorrência
+        timer.Start();
+        foreach(var id in pokemonIds)
+        {
+            p.EscreveNoArquivo(p.GetPokemon(id));
+        }
+        timer.Stop();
+        long tempoSequencial = timer.ElapsedMilliseconds;
 
-        Console.WriteLine(c);
+        p.EscreveNoArquivo("\n-----------------\n");
+
+        //Versão com Parallel.For ou Parallel.ForEach
+        timer = new();
+        timer.Start();
+        Parallel.ForEach(pokemonIds, id => 
+        {
+            pokemonBag.Add(p.GetPokemon(id));
+        });
+        p.EscreveNoArquivo(pokemonBag.Select(el => el.ToString()).Aggregate((acc, nxt) => acc + "\n" + nxt));
+        timer.Stop();
+        long tempoParallel = timer.ElapsedMilliseconds;
+
+        p.EscreveNoArquivo("\n-----------------\n");
+
+        //Versão com async/await
+        timer = new();
+        timer.Start();
+        foreach (var id in pokemonIds)
+        {
+            var t = Task.Run(async () =>
+            {
+                var pokemonDTO = p.GetPokemonAsync(id);
+                p.EscreveNoArquivo(await pokemonDTO);
+            });
+            tasks.Add(t);
+        }
+        Task.WaitAll(tasks.ToArray());
+
+        timer.Stop();
+        long tempoAsyncAwait = timer.ElapsedMilliseconds;
+
+        Console.WriteLine($"Senquencial: {tempoSequencial}ms, Parallel: {tempoParallel}ms, Async/Await: {tempoAsyncAwait}ms");
     }
 }
