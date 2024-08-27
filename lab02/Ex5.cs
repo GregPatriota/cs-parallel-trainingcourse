@@ -8,54 +8,17 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
+
 /**
-* //////////////////////////////////
-* // As avaliações e observações //
-* // das implementações estão no //
-* //   documento em anexado      //
-* /////////////////////////////////
-* .       (\__/)  ||
-* .       (•ㅅ•)  ||
-* .       ( 　 づ || 
-**/
-internal record PokemonDTO
-{
-    [JsonPropertyName("id")]
-    public int Id { get; set; }
-    [JsonPropertyName("name")]
-    public string Nome { get; set; }
-    [JsonPropertyName("types")]
-    public IList<PokemonTiposDTO> Tipos { get; set; }
-
-    public override string ToString()
-    {
-        return $"{Nome}, {Tipos.Select(el => el.ToString()).Aggregate((acc, x) => $"{acc}, {x}")}";
-    }
-}
-
-internal record PokemonTiposDTO
-{
-    [JsonPropertyName("type")]
-    public PokemonTipoDTO Tipo { get; set; }
-
-    public override string ToString()
-    {
-        return $"{Tipo}";
-    }
-}
-
-internal record PokemonTipoDTO
-{
-    [JsonPropertyName("name")]
-    public string Nome { get; set; }
-
-    public override string ToString()
-    {
-        return Nome;
-    }
-}
-
-
+ * //////////////////////////////////
+ * // As avaliações e observações //
+ * // das implementações estão no //
+ * //   documento em anexado      //
+ * /////////////////////////////////
+ * .       (\__/)  ||
+ * .       (•ㅅ•)  ||
+ * .       ( 　 づ || 
+ **/
 class Program
 {
     private readonly object _lock = new();
@@ -177,5 +140,57 @@ class Program
         long tempoAsyncAwait = timer.ElapsedMilliseconds;
 
         Console.WriteLine($"Senquencial: {tempoSequencial}ms, Parallel: {tempoParallel}ms, Async/Await: {tempoAsyncAwait}ms");
+    }
+}
+
+/** ⡿⠟⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⠟⠛⠉⠉
+ * ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⡏⠀⠀⠀⠀
+ *⠀ ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠿⠿⠁⠀⠀⠀⠀
+ *⠀⠀⠀⠀⠀⠀⢰⣶⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀
+ *⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣷⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣶⣾⣿⠀
+ *⠀⠀⠀⠀⠀⠀⠀⠘⢿⣿⣿⣿⣿⣦⣀⣀⣀⣄⣀⣀⣠⣀⣤⣶⣿⣿⣿⣿⣿⠇⠀
+ *⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠋⠀⠀
+ *⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⠋⠀⠀⠀⠀
+ *⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⡏⠆⢹⣿⣿⣿⣿⣿⣿⠒⠈⣿⣿⣿⣇⠀⠀⠀⠀
+ *⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⣿⣷⣶⣿⣿⣛⣻⣿⣿⣿⣶⣾⣿⣿⣿⣿⡀⠀⠀⠀
+ *⠀⠀⠀⠀⠀⠀⠀⠀⠀⡁⠀⠈⣿⣿⣿⣿⢟⣛⡻⣿⣿⣿⣟⠀⠀⠈⣿⡇⠀⠀⠀
+ *⠀⠀⠀⠀⠀⠀⠀⠀⠀⢿⣶⣿⣿⣿⣿⣿⡻⣿⡿⣿⣿⣿⣿⣶⣶⣾⣿⣿⠀⠀⠀
+ *⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⣿⣿⣿⣿⣿⣿⣿⣷⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡆⠀⠀
+ *⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀
+ */
+internal record PokemonDTO
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+    [JsonPropertyName("name")]
+    public string Nome { get; set; }
+    [JsonPropertyName("types")]
+    public IList<PokemonTiposDTO> Tipos { get; set; }
+
+    public override string ToString()
+    {
+        return $"{Nome}, {Tipos.Select(el => el.ToString()).Aggregate((acc, x) => $"{acc}, {x}")}";
+    }
+}
+
+internal record PokemonTiposDTO
+{
+    [JsonPropertyName("type")]
+    public PokemonTipoDTO Tipo { get; set; }
+
+    public override string ToString()
+    {
+        return $"{Tipo}";
+    }
+}
+
+internal record PokemonTipoDTO
+{
+    [JsonPropertyName("name")]
+    public string Nome { get; set; }
+
+    public override string ToString()
+    {
+        return Nome;
     }
 }
