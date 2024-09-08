@@ -90,8 +90,7 @@ class Program
        timer.Stop();
        long t_sequencial = timer.ElapsedMilliseconds;
 
-       timer = new Stopwatch();
-       timer.Start();
+       timer.Restart();
        double resultParalelo = p.Paralelo(N);
        timer.Stop();
        long t_paralelo = timer.ElapsedMilliseconds;
