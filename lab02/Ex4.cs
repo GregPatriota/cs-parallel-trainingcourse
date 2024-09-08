@@ -73,8 +73,7 @@ class Program
        long timer_base = timer.ElapsedMilliseconds;
 
        //Com Task:
-       timer = new();
-       timer.Start();
+       timer.Restart();
        IList<Task> tasks = new List<Task>();
        foreach (int i in sequence)
        {
@@ -90,8 +89,7 @@ class Program
        long timer_task = timer.ElapsedMilliseconds;
 
        //Com Parallel.For:
-       timer = new();
-       timer.Start();
+       timer.Restart();
        Parallel.For(0, sequence.Length, (index) =>
        {
            var l = p.CalculaNumeroPrimos(sequence[index]);
@@ -101,8 +99,7 @@ class Program
        long timer_parallelFor = timer.ElapsedMilliseconds;
 
        //Com Parallel.ForEach
-       timer = new();
-       timer.Start();
+       timer.Restart();
        Parallel.ForEach(sequence, (el) =>
        {
            var l = p.CalculaNumeroPrimos(el);
