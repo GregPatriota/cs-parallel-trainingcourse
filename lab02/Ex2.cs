@@ -89,8 +89,7 @@ class Program
        timer.Stop();
        var s_time = timer.ElapsedMilliseconds;
 
-       timer = new();
-       timer.Start();
+       timer.Restart();
        var media = Task.Run(() => p.Media(sequence)); //Executa o calculo de média em uma thread separada, não há dependencia de valores anteriores
        var mediana = Task.Run(() => p.Mediana(sequence));//Executa o calculo da mediana em uma thread separada, não há dependencia de valores anteriores
        var variancia = Task.Run(() => p.Variancia(sequence, media.Result)); //Executa o calculo de variância em uma thread separada, mas bloqueará a execução até que o resultado de média esteja pronto
